@@ -1,12 +1,14 @@
 import { createApp } from './src/app.mjs';
 import { ResultStore } from './src/store.mjs';
-import { createWhisperTranscriber, createClaudePolisher } from './src/providers.mjs';
+import {
+  createWhisperTranscriber,
+  createOpenAiPolisher,
+} from './src/providers.mjs';
 
 const {
   NOTECAT_TOKEN,
   OPENAI_API_KEY,
-  ANTHROPIC_API_KEY,
-  POLISH_MODEL = 'claude-opus-4-8',
+  POLISH_MODEL = 'gpt-4.1-mini',
   WHISPER_MODEL = 'whisper-1',
   PORT = '8787',
   DATA_DIR = './data',
@@ -24,7 +26,10 @@ if (!OPENAI_API_KEY) {
 const app = createApp({
   authToken: NOTECAT_TOKEN,
   transcribe: createWhisperTranscriber({ apiKey: OPENAI_API_KEY, model: WHISPER_MODEL }),
-  polish: createClaudePolisher({ apiKey: ANTHROPIC_API_KEY, model: POLISH_MODEL }),
+  polish: createOpenAiPolisher({
+    apiKey: OPENAI_API_KEY,
+    model: POLISH_MODEL,
+  }),
   store: new ResultStore(DATA_DIR),
   log: (msg) => console.log(new Date().toISOString(), msg),
 });

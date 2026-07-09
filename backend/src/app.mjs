@@ -122,6 +122,14 @@ export function createApp({ authToken, transcribe, polish, store, log = () => {}
 
   return createServer(async (req, res) => {
     try {
+      
+      if (req.method === 'GET' && req.url === '/') {
+        return json(res, 200, {
+          ok: true,
+          service: 'NoteCat backend',
+        });
+      }
+      
       if (req.method === 'GET' && req.url === '/health') {
         return json(res, 200, { ok: true });
       }

@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+
 
 /**
  * Skuteční poskytovatelé: OpenAI Whisper (STT) a Claude (úprava textu).
@@ -58,48 +58,96 @@ Zakázáno:
 - Nevytvářej připomínky, kategorie, priority ani seznamy úkolů.
 - Neodpovídej na obsah poznámky, pouze ji přepiš do čitelné podoby.`;
 
-/** AI úprava přepisu přes Claude API se strukturovaným (validovaným) výstupem. */
-export function createClaudePolisher({ apiKey, model = 'claude-opus-4-8' }) {
-  const client = new Anthropic(apiKey ? { apiKey } : {});
+/** AI úprava přepisu přes OpenAI API se strukturovaným výstupem. */
+export function createOpenAiPolisher({
+  apiKey,
+  model = 'gpt-4.1-mini',
+}) {
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY není nastaven');
+  }
+
   return async function polish(transcript) {
     let response;
+
     try {
-      response = await client.messages.create({
-        model,
-        max_tokens: 1024,
-        system: POLISH_SYSTEM,
-        messages: [
-          {
-            role: 'user',
-            content: `Uprav tento přepis hlasové poznámky:\n\n${transcript}`,
-          },
-        ],
-        output_config: {
-          format: {
+      response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${apiKey}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0,
+          messages: [
+            {
+              role: 'system',
+              content: POLISH_SYSTEM,
+            },
+            {
+              role: 'user',
+              content: `Uprav tento přepis hlasové poznámky:\n\n${transcript}`,
+            },
+          ],
+          response_format: {
             type: 'json_schema',
-            schema: {
-              type: 'object',
-              properties: {
-                polished: {
-                  type: 'string',
-                  description: 'Upravený text poznámky v češtině',
+            json_schema: {
+              name: 'polished_note',
+              strict: true,
+              schema: {
+                type: 'object',
+                properties: {
+                  polished: {
+                    type: 'string',
+                    description: 'Upravený text poznámky v češtině',
+                  },
                 },
+                required: ['polished'],
+                additionalProperties: false,
               },
-              required: ['polished'],
-              additionalProperties: false,
             },
           },
-        },
+        }),
       });
     } catch (err) {
-      // SDK samo opakuje 429/5xx; co doletí sem, řešíme jako dočasnou chybu
-      throw transientError(`Claude nedostupný: ${err.message}`);
+      throw transientError(`OpenAI není dostupné: ${err.message}`);
     }
-    const text = response.content.find((b) => b.type === 'text')?.text ?? '';
-    const parsed = JSON.parse(text);
-    if (typeof parsed.polished !== 'string') {
-      throw new Error('Claude vrátil neočekávaný tvar odpovědi');
+
+    if (response.status === 429 || response.status >= 500) {
+      throw transientError(`OpenAI HTTP ${response.status}`);
     }
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+
+      throw Object.assign(
+        new Error(`OpenAI HTTP ${response.status}: ${detail}`),
+        {
+          status: 502,
+          publicMessage: 'polish_failed',
+        },
+      );
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content ?? '';
+
+    let parsed;
+
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      throw new Error('OpenAI vrátil neplatný JSON');
+    }
+
+    if (
+      typeof parsed.polished !== 'string' ||
+      parsed.polished.trim().length === 0
+    ) {
+      throw new Error('OpenAI vrátil neočekávaný tvar odpovědi');
+    }
+
     return parsed.polished.trim();
   };
 }
