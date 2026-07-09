@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NoteCat</string>
+    <string name="tile_label">Hlasová poznámka</string>
+    <string name="shortcut_capture_short">Poznámka</string>
+    <string name="shortcut_capture_long">Nová hlasová poznámka</string>
+
+    <!-- Capture -->
+    <string name="capture_listening">Poslouchám…</string>
+    <string name="capture_preparing">Připravuji mikrofon…</string>
+    <string name="capture_hint_command">Diktování ukončíš slovem „konec“ nebo tlačítkem.</string>
+    <string name="capture_stop">Hotovo</string>
+    <string name="capture_cancel">Zrušit</string>
+    <string name="capture_saved">Uloženo, zpracovávám.</string>
+    <string name="capture_discarded_empty">Záznam byl prázdný, nic jsem neuložila.</string>
+    <string name="capture_error_mic">Nepodařilo se spustit nahrávání. Zkontroluj oprávnění k mikrofonu.</string>
+    <string name="capture_permission_needed">NoteCat potřebuje přístup k mikrofonu, aby mohl nahrát poznámku.</string>
+    <string name="capture_permission_grant">Povolit mikrofon</string>
+
+    <!-- Seznam -->
+    <string name="list_empty_title">Zatím žádné poznámky</string>
+    <string name="list_empty_subtitle">Klepni na tlačítko dole a nadiktuj první myšlenku.</string>
+    <string name="list_search_hint">Hledat v poznámkách…</string>
+    <string name="list_new_note">Nová hlasová poznámka</string>
+    <string name="list_search_no_results">Nic jsem nenašla.</string>
+
+    <!-- Stavy -->
+    <string name="status_pending">Čeká na zpracování</string>
+    <string name="status_processing">Zpracovávám…</string>
+    <string name="status_failed">Zpracování se nezdařilo</string>
+
+    <!-- Detail -->
+    <string name="detail_title">Poznámka</string>
+    <string name="detail_original_transcript">Původní přepis</string>
+    <string name="detail_edit">Upravit</string>
+    <string name="detail_save">Uložit</string>
+    <string name="detail_delete">Smazat</string>
+    <string name="detail_retry">Zkusit znovu</string>
+    <string name="detail_delete_confirm_title">Smazat poznámku?</string>
+    <string name="detail_delete_confirm_text">Tohle nejde vrátit zpět.</string>
+    <string name="detail_delete_confirm_yes">Smazat</string>
+    <string name="detail_delete_confirm_no">Ponechat</string>
+    <string name="detail_created">Vytvořeno</string>
+    <string name="detail_error_label">Chyba</string>
+
+    <!-- Nastavení -->
+    <string name="settings_title">Nastavení</string>
+    <string name="settings_backend_url">Adresa backendu</string>
+    <string name="settings_backend_url_hint">https://…</string>
+    <string name="settings_backend_token">Přístupový token</string>
+    <string name="settings_close_after_save">Po uložení zavřít nahrávací obrazovku</string>
+    <string name="settings_saved">Nastavení uloženo</string>
+    <string name="settings_section_backend">Backend</string>
+    <string name="settings_section_behavior">Chování</string>
+    <string name="settings_backend_missing_warning">Bez nastaveného backendu se poznámky uloží jen lokálně a čekají na zpracování.</string>
+
+    <string name="back">Zpět</string>
+</resources>

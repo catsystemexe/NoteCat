@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="capture"
+        android:enabled="true"
+        android:icon="@drawable/ic_notecat_mic"
+        android:shortcutShortLabel="@string/shortcut_capture_short"
+        android:shortcutLongLabel="@string/shortcut_capture_long">
+        <intent
+            android:action="cz.notecat.app.action.CAPTURE"
+            android:targetPackage="cz.notecat.app"
+            android:targetClass="cz.notecat.app.capture.CaptureActivity" />
+    </shortcut>
+</shortcuts>

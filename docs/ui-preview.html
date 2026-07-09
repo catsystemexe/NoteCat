@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoteCat — ukázky UI</title>
+<style>
+  :root {
+    --ink: #16212A; --ink-soft: #54646A; --mint: #2FA98C; --mint-soft: #CDEEE4;
+    --paper: #F7F9F8; --card: #FFFFFF; --outline: #E4ECE9; --error: #BA4A42;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+    background: #E9EEEC; color: var(--ink); padding: 32px 16px;
+  }
+  h1 { text-align: center; font-size: 22px; margin-bottom: 4px; }
+  p.sub { text-align: center; color: var(--ink-soft); font-size: 14px; margin-bottom: 28px; }
+  .row { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; }
+  .phone {
+    width: 300px; height: 620px; background: var(--paper); border-radius: 28px;
+    border: 8px solid #1E2A32; overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 12px 32px rgba(22,33,42,.18);
+  }
+  .phone h3 { text-align:center; font-size:13px; color:var(--ink-soft); font-weight:500;
+    padding: 0; margin: 10px 0 0; }
+  .label { text-align: center; font-size: 14px; font-weight: 600; margin-top: 10px; }
+  .screen { flex: 1; display: flex; flex-direction: column; padding: 18px 18px 14px; }
+  .statusbar { height: 22px; font-size: 11px; color: var(--ink-soft);
+    display:flex; justify-content:space-between; padding: 4px 18px 0; }
+
+  /* Capture */
+  .cap { align-items: center; text-align: center; }
+  .cap .title { font-size: 24px; font-weight: 600; margin-top: 26px; }
+  .cap .time { color: var(--mint); font-size: 19px; font-weight: 600; margin-top: 6px; }
+  .micwrap { flex: 1; display: flex; align-items: center; justify-content: center; }
+  .ring { width: 170px; height: 170px; border-radius: 50%;
+    background: rgba(47,169,140,.28); display:flex; align-items:center; justify-content:center; }
+  .mic { width: 110px; height: 110px; border-radius: 50%; background: var(--mint);
+    display: flex; align-items: center; justify-content: center; font-size: 46px; color: #fff; }
+  .hint { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; }
+  .btn-primary { width: 100%; height: 54px; border-radius: 27px; border: 0;
+    background: var(--mint); color: #fff; font-size: 16px; font-weight: 600; }
+  .btn-text { background: none; border: 0; color: var(--ink-soft); font-size: 14px;
+    margin-top: 8px; }
+
+  /* List */
+  .appbar { display: flex; justify-content: center; align-items: center;
+    position: relative; padding: 8px 0 12px; font-weight: 600; font-size: 17px; }
+  .appbar .gear { position: absolute; right: 0; color: var(--ink-soft); }
+  .search { display: flex; align-items: center; gap: 8px; border: 1px solid var(--outline);
+    border-radius: 16px; padding: 10px 14px; color: var(--ink-soft); font-size: 14px;
+    background: #fff; margin-bottom: 12px; }
+  .note { background: var(--card); border-radius: 18px; padding: 14px; margin-bottom: 10px; }
+  .note .txt { font-size: 14.5px; line-height: 1.45; }
+  .note .meta { display: flex; justify-content: space-between; margin-top: 8px;
+    font-size: 11.5px; color: var(--ink-soft); }
+  .chip { font-weight: 600; }
+  .chip.proc { color: var(--mint); } .chip.wait { color: var(--ink-soft); }
+  .chip.fail { color: var(--error); }
+  .fab { margin-top: auto; align-self: flex-end; background: var(--mint); color: #fff;
+    border: 0; border-radius: 18px; padding: 14px 18px; font-size: 14.5px;
+    font-weight: 600; box-shadow: 0 6px 16px rgba(47,169,140,.4); }
+
+  /* Detail */
+  .dt-bar { display: flex; align-items: center; gap: 10px; padding-bottom: 10px;
+    font-weight: 600; font-size: 17px; }
+  .dt-bar .del { margin-left: auto; color: var(--error); }
+  .dt-meta { display: flex; justify-content: space-between; font-size: 11.5px;
+    color: var(--ink-soft); margin-bottom: 12px; }
+  .dt-text { font-size: 15px; line-height: 1.5; }
+  .btn-outline { border: 1.4px solid var(--outline); background: none; color: var(--ink);
+    border-radius: 20px; padding: 8px 16px; font-size: 13.5px; margin-top: 12px;
+    align-self: flex-start; font-weight: 500; }
+  .transcript-label { font-size: 11px; color: var(--ink-soft); font-weight: 600;
+    margin: 22px 0 6px; letter-spacing: .4px; }
+  .transcript { background: rgba(228,236,233,.7); border-radius: 14px; padding: 12px;
+    font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+
+  /* Settings */
+  .sec { font-size: 11px; font-weight: 700; color: var(--mint); letter-spacing: .5px;
+    margin: 14px 0 8px; }
+  .field { border: 1.4px solid var(--outline); border-radius: 14px; padding: 12px 14px;
+    font-size: 13.5px; margin-bottom: 10px; background: #fff; }
+  .field small { display: block; color: var(--ink-soft); font-size: 10.5px; margin-bottom: 2px; }
+  .switchrow { display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px; padding: 6px 2px; }
+  .switch { width: 44px; height: 24px; background: var(--mint); border-radius: 12px;
+    position: relative; }
+  .switch::after { content: ""; position: absolute; right: 3px; top: 3px; width: 18px;
+    height: 18px; background: #fff; border-radius: 50%; }
+</style>
+</head>
+<body>
+  <h1>NoteCat — ukázky výsledného UI</h1>
+  <p class="sub">Statický render čtyř hlavních obrazovek (Compose implementace používá stejnou paletu a rozvržení).</p>
+  <div class="row">
+
+    <!-- 1. Capture -->
+    <div>
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span>▲ ● ▮</span></div>
+        <div class="screen cap">
+          <div class="title">Poslouchám…</div>
+          <div class="time">0:23</div>
+          <div class="micwrap"><div class="ring"><div class="mic">🎙</div></div></div>
+          <div class="hint">Diktování ukončíš slovem „konec“ nebo tlačítkem.</div>
+          <button class="btn-primary">✓&nbsp; Hotovo</button>
+          <button class="btn-text">Zrušit</button>
+        </div>
+      </div>
+      <div class="label">Nahrávání (QS dlaždice → okamžitě)</div>
+    </div>
+
+    <!-- 2. List -->
+    <div>
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span>▲ ● ▮</span></div>
+        <div class="screen">
+          <div class="appbar">NoteCat <span class="gear">⚙</span></div>
+          <div class="search">🔍&nbsp; Hledat v poznámkách…</div>
+          <div class="note">
+            <div class="txt">Zavolat sklenáři kvůli rozbitému oknu u mámy a ověřit jeho dostupnost.</div>
+            <div class="meta"><span></span><span>09.07. 9:38</span></div>
+          </div>
+          <div class="note">
+            <div class="txt" style="color:var(--ink-soft)">…</div>
+            <div class="meta"><span class="chip proc">⟳ Zpracovávám…</span><span>09.07. 9:41</span></div>
+          </div>
+          <div class="note">
+            <div class="txt">Vyzvednout balík na poště do pátku.</div>
+            <div class="meta"><span class="chip wait">⧗ Čeká na zpracování</span><span>08.07. 18:02</span></div>
+          </div>
+          <div class="note">
+            <div class="txt" style="color:var(--ink-soft)">…</div>
+            <div class="meta"><span class="chip fail">⚠ Zpracování se nezdařilo</span><span>08.07. 7:15</span></div>
+          </div>
+          <button class="fab">🎙&nbsp; Nová hlasová poznámka</button>
+        </div>
+      </div>
+      <div class="label">Hlavní obrazovka se stavy</div>
+    </div>
+
+    <!-- 3. Detail -->
+    <div>
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span>▲ ● ▮</span></div>
+        <div class="screen">
+          <div class="dt-bar">← &nbsp;Poznámka <span class="del">🗑</span></div>
+          <div class="dt-meta"><span></span><span>Vytvořeno 09.07. 9:38</span></div>
+          <div class="dt-text">Zavolat sklenáři kvůli rozbitému oknu u mámy a ověřit jeho dostupnost.</div>
+          <button class="btn-outline">✎&nbsp; Upravit</button>
+          <div class="transcript-label">PŮVODNÍ PŘEPIS</div>
+          <div class="transcript">hele máma má rozbitý okno potřebuju zavolat sklenáři jestli je dostupnej</div>
+        </div>
+      </div>
+      <div class="label">Detail — upravený text + přepis odděleně</div>
+    </div>
+
+    <!-- 4. Settings -->
+    <div>
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span>▲ ● ▮</span></div>
+        <div class="screen">
+          <div class="dt-bar">← &nbsp;Nastavení</div>
+          <div class="sec">BACKEND</div>
+          <div class="field"><small>Adresa backendu</small>https://notecat.mujserver.cz</div>
+          <div class="field"><small>Přístupový token</small>••••••••••••••••••••••••</div>
+          <div class="sec">CHOVÁNÍ</div>
+          <div class="switchrow">Po uložení zavřít nahrávací obrazovku <span class="switch"></span></div>
+          <button class="btn-primary" style="margin-top:22px">Uložit</button>
+        </div>
+      </div>
+      <div class="label">Nastavení (token v šifrovaných preferencích)</div>
+    </div>
+
+  </div>
+</body>
+</html>

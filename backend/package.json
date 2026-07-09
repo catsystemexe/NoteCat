@@ -1,0 +1,17 @@
+{
+  "name": "notecat-backend",
+  "version": "1.0.0",
+  "description": "NoteCat backend – přepis hlasových poznámek (Whisper) a AI úprava textu (Claude)",
+  "type": "module",
+  "main": "server.mjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0"
+  }
+}

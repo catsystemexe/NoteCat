@@ -1,0 +1,20 @@
+*.iml
+.gradle/
+build/
+local.properties
+.idea/
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+!docs/**/*.apk
+
+# Vosk model se stahuje při buildu, do gitu nepatří
+app/src/main/assets/model-cs/
+
+# Backend
+node_modules/
+backend/data/
+.env
