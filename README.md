@@ -89,3 +89,27 @@ cd backend && npm install && npm run build && npm test
 ```
 
 Manual validation scenarios are in [`docs/manual-checklist.md`](docs/manual-checklist.md).
+
+## Glass Night UI demo
+
+The Android app now opens a self-contained Jetpack Compose demo of the NoteCat main screen on the `list` route. It is intentionally isolated from the production Room database, WorkManager processing, backend contract, and real audio capture flow. The existing capture route and repository code remain available for production capture entry points.
+
+### Visual style
+
+Glass Night uses a dark blue-black background, translucent dark cards, subtle blue/light borders, muted blue accents, and high-contrast grey/white text. Design tokens for colors, spacing, radius, typography, and animation durations live in `app/src/main/java/cz/notecat/ui/GlassNightTheme.kt`.
+
+### Interactions
+
+- Tap a note card to open an overlay detail with the full edited text, optional timestamp, and `Původní přepis` section.
+- Double tap a card to edit its text with `Uložit` and `Zrušit` actions.
+- Swipe a card left to reveal `Smazat`; deletion only happens after tapping that action.
+- Deleted notes show a Snackbar with `Vrátit zpět`, restoring the note to its original position.
+- Failed demo notes show `Opakovat`, transitioning through processing and then done.
+
+### Demo recording flow
+
+The centered bottom `+` button starts simulated recording, pulses gently, changes to a stop symbol, and shows elapsed seconds. Tapping it again stops the simulation, inserts a processing note at the top, and completes it after a short delay.
+
+### Known limitations
+
+This is a UI demo. It does not write demo notes into Room, upload audio, call the backend, or enqueue WorkManager jobs. Real capture remains separate in the existing `CaptureScreen`.
