@@ -181,7 +181,7 @@ private fun NoteCard(note: DemoNote, onOpen: () -> Unit, onEdit: () -> Unit, onD
                 Text(note.text, style = tokens.noteText, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     StatusPill(note)
-                    if (note.status == ProcessingStatus.FAILED) TextButton(onClick = onRetry, modifier = Modifier.heightIn(min = 48.dp)) { Text("Opakovat", color = tokens.accentBlue, style = tokens.actionText) }
+                    if (note.status == ProcessingStatus.FAILED) TextButton(onClick = onRetry, modifier = Modifier.heightIn(min = 48.dp)) { Text("Opakovat", color = tokens.colors.accentBlue, style = tokens.actionText) }
                 }
             }
         }
