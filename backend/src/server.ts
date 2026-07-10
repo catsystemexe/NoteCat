@@ -34,7 +34,8 @@ export function buildServer() {
 }
 
 async function transcribeCzech(client: OpenAI, audio: Buffer) {
-  const file = new File([audio], 'note.m4a', { type: 'audio/mp4' });
+  const bytes = new Uint8Array(audio);
+  const file = new File([bytes], 'note.m4a', { type: 'audio/mp4' });
   const response = await client.audio.transcriptions.create({ model: 'gpt-4o-mini-transcribe', file, language: 'cs' });
   return response.text;
 }
